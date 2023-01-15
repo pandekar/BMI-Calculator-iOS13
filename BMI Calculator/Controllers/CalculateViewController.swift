@@ -15,7 +15,7 @@ class CalculateViewController: UIViewController {
     @IBOutlet weak var heightSlider: UISlider!
     @IBOutlet weak var weightSlider: UISlider!
     
-    var bmi: Float?
+    var calculatorBrain = CalculatorBrain()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,9 +37,7 @@ class CalculateViewController: UIViewController {
     @IBAction func buttonPressed(_ sender: UIButton) {
         let heightValue: Float = heightSlider.value
         let weightValue: Float = weightSlider.value
-        let bmi: Float = round((weightValue / (heightValue * heightValue)) * 10) / 10.0
-        
-        self.bmi = bmi
+        calculatorBrain.calculateBMI(heightValue, weightValue)
         
         // perform and do segue, show controller with segue identifier "showResult"
         self.performSegue(withIdentifier: "showResult", sender: self)
@@ -50,7 +48,9 @@ class CalculateViewController: UIViewController {
         if segue.identifier == "showResult" {
             // as! -> untuk downCasting UIViewContoller menjadi ResultViewController
             let resultView = segue.destination as! ResultViewController
-            resultView.bmi = self.bmi!
+            resultView.bmi = calculatorBrain.getBMIValue()
+            resultView.advice = calculatorBrain.getBMIAdvice()
+            resultView.color = calculatorBrain.getBMIColor()
         }
     }
 }
